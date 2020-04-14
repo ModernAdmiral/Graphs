@@ -3,52 +3,110 @@ Simple graph implementation
 """
 from util import Stack, Queue  # These may come in handy
 
+
 class Graph:
 
     """Represent a graph as a dictionary of vertices mapping labels to edges."""
+
     def __init__(self):
-        self.vertices = {}
+        self.vertices = {}  # this is the adjacency list
 
     def add_vertex(self, vertex_id):
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        # Check if they exist
+        if v1 in self.vertices and v2 in self.vertices:
+            # Add the edge
+            self.vertices[v1].add(v2)
+        else:
+            print("Error: Vertex not found")
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
-        pass  # TODO
+        if vertex_id in self.vertices:
+            return self.vertices[vertex_id]
+        else:
+            return None
 
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        # Create a q and enqueue starting vertex
+        qq = Queue()
+        qq.enqueue([starting_vertex])
+        # Create a set of traversed vertices
+        visited = set()
+        # While queue is not empty
+        while qq.size() > 0:
+            # dequeue/pop the first vertex
+            path = qq.dequeue()
+            # if not visited
+            if path[-1] not in visited:
+                # traverse and mark visited
+                print(path[-1])
+                # mark as visited
+                visited.add(path[-1])
+                # enqueue all neighbors
+                for next_vert in self.vertices:
+                    new_path = list(path)
+                    new_path.append(next_vert)
+                    qq.enqueue(new_path)
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        # create a stack and put in starting vertex
+        ss = Stack()
+        ss.push([starting_vertex])
+        # Create a set of traversed vertices
+        visited = set()
+        # While Stack is not empty
+        while ss.size() > 0:
+            # pop a vertex from stack to visit next
+            vertex = ss.pop()
+            # Push all neighbours of vertex in stack that are not visited
+            if vertex[-1] not in visited:
+                print(vertex[-1])
+                visited.add(vertex[-1])
+                for neighbor in self.get_neighbors(vertex[-1]):
+                    new_path = list(vertex)
+                    new_path.append(neighbor)
+                    ss.push(new_path)
+            # if not visited
 
-    def dft_recursive(self, starting_vertex):
+    def dft_recursive(self, starting_vertex, visited=None):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
 
         This should be done using recursion.
         """
-        pass  # TODO
+        # Check if the node has been visited
+        # if not...
+        # Mark as visited
+        # Call dft_recursive on each neigbor
+        if visited is None:
+            visited = set()
+        if starting_vertex not in visited:
+            # Mark it as visited
+            visited.add(starting_vertex)
+            print(starting_vertex)
+            # call dft_recursive on each neigbor
+            for neighbor in self.get_neighbors(starting_vertex):
+                self.dft_recursive(neighbor, visited)
 
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -75,6 +133,7 @@ class Graph:
         This should be done using recursion.
         """
         pass  # TODO
+
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
@@ -143,3 +202,13 @@ if __name__ == '__main__':
     '''
     print(graph.dfs(1, 6))
     print(graph.dfs_recursive(1, 6))
+# graph = Graph()  # Instantiate your graph
+# graph.add_vertex('0')
+# graph.add_vertex('1')
+# graph.add_vertex('2')
+# graph.add_vertex('3')
+# graph.add_edge('0', '1')
+# graph.add_edge('1', '0')
+# graph.add_edge('0', '3')
+# graph.add_edge('3', '0')
+# print(graph.vertices)
